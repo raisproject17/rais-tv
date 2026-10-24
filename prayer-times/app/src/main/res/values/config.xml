@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Rais TV fork: nilai ini hanya FALLBACK bila SharedPreferences kosong
+         dan pemilih lokasi belum jalan (seharusnya tidak terjadi, karena
+         MainActivity memaksa pilih lokasi di buka pertama).
+         Default fallback = Serang, Banten. -->
+    <string name="latitude" translatable="false">-6.11</string>
+    <string name="longitude" translatable="false">106.15</string>
+    <string name="place" translatable="false">Serang</string>
+    <!-- Aladhan method 20 = Kementerian Agama Republik Indonesia.
+         Lokasi aktif dipilih user by provinsi -> kota (Locations.java),
+         bukan dari nilai di sini. -->
+    <string name="method" translatable="false">20</string>
+    <color name="accent">#2BB673</color>
+</resources>
