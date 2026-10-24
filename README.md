@@ -52,7 +52,7 @@ Repo upstream di `../cleanyourtv/` TIDAK diubah (git status bersih).
   `config.xml` (`show_brand_logo`, default true) → `Config.java`
   (`cfg.showBrandLogo`) → `MainActivity` (sembunyikan `brandLogo`)
   dan `ClockScene` (sembunyikan `flipLogo`).
-- Untuk eksekusi non-interaktif / AI di HP (lihat `AI_PROMPT.md`):
+- Untuk eksekusi non-interaktif di mesin lokal (lihat `AI_PROMPT.md`):
   set env sebelum jalan, script TIDAK bertanya:
   `USE_LOGO=0 ./install-rais.sh` (tanpa logo) atau
   `USE_LOGO=1 ./install-rais.sh` (pakai logo, default bila kosong
@@ -117,22 +117,43 @@ dsb) TIDAK dimasukkan — tambahkan manual per TV setelah cek
 `dumpsys package` (lihat header file itu). JANGAN sentuh paket inti
 Android, TV/input, remote/Bluetooth, keyboard, Play Store/Services.
 
-## Eksekusi via ADB + AI di HP (Gemini, dll — satu jaringan dengan TV)
-Repo ini PUBLIC supaya AI di HP bisa baca tanpa login GitHub.
-Alurnya: HP + TV satu Wi-Fi, di TV sudah ON Developer options +
-Network ADB, lalu AI di HP menjalankan perintah ADB ke IP TV.
-Prompt siap tempel ada di `AI_PROMPT.md` — intinya:
-1. Clone repo public ini (tanpa auth): `git clone https://github.com/raisproject17/rais-tv.git`
-2. Tanyakan dulu ke user: (a) IP TV, (b) pakai logo atau tidak
-   (`USE_LOGO=0/1`), (c) file BitTV & TV Bro sudah di HP atau belum.
-3. Backup dulu (`install-rais.sh` sudah melakukannya), JANGAN
-   uninstall apa pun, JANGAN disable paket inti / TV / input /
-   remote / keyboard / Play Store / Play Services.
-4. Jalankan `install-rais.sh`, verifikasi Home pindah ke launcher
-   Rais (`dumpsys activity activities | grep mFocusedApp`), baru
-   matikan stock launcher bila user setuju.
-5. Lapor hasil per langkah + undo-nya (restore.sh, DNS opportunistic,
-   kembalikan screen_off_timeout).
+## Eksekusi via ADB — eksekutor HARUS lokal (koreksi 2026-10-25)
+
+Repo ini PUBLIC supaya mesin lokal bisa clone tanpa login GitHub.
+TAPI: AI cloud (Gemini web/app, Muse cloud, dll) TIDAK BISA adb ke
+TV — mereka tidak punya rute ke Wi-Fi rumah user, jadi IP lokal TV
+(192.168.x.x) tidak terjangkau dari cloud. Ini sesuai upstream
+(`PROMPT.md` baris pertama: tempel prompt ke coding assistant DI
+KOMPUTER YANG SATU WI-FI DENGAN TV; `docs/REMOTE.md`: semua asumsi
+repo ini adalah komputer + TV satu Wi-Fi).
+
+Jalur yang benar, sesuai upstream:
+1. **PC/laptop di rumah, satu Wi-Fi dengan TV** (paling benar):
+   clone repo, jalankan `install-rais.sh` di terminal, atau pakai
+   Claude Code / Gemini CLI DI PC ITU (GEMINI.md upstream memang
+   untuk Gemini CLI lokal, bukan Gemini web/app cloud).
+2. **HP satu Wi-Fi, tapi eksekusi lokal manual**: Termux di HP
+   (adb dari HP ke TV langsung, satu jaringan) — user tempel
+   perintahnya manual, AI cloud hanya menyiapkan perintahnya,
+   bukan yang mengeksekusi.
+3. **Eksekutor di luar rumah**: pakai Tailscale privat
+   (`docs/REMOTE.md` upstream) — Tailscale di TV (Play Store, alamat
+   100.x.y.z) atau helper device di rumah sebagai subnet router
+   (advertise 192.168.1.0/24). Syarat: EKSEKUTORNYA join tailnet
+   yang sama. JANGAN forward port 5555 router ke internet (ADB =
+   kontrol penuh TV, bot scan port ADB terbuka).
+4. **Relay upstream** (`tools/relay.py`, `tools/relay.md`): hanya
+   untuk assistant yang jalan di mesin yang sama dengan relay tapi
+   sandbox-nya diblokir dari jaringan lokal — relay jalan di
+   terminal biasa (`tools/relay.py <ip-tv>`, listen 127.0.0.1:15555),
+   assistant pakai `TV_HOST=127.0.0.1 TV_PORT=15555`. Relay TIDAK
+   membuat AI cloud bisa reach PC user.
+
+Prompt siap tempel (dengan peringatan lokal ini) ada di
+`AI_PROMPT.md`. Alur intinya tetap: tanya IP TV + logo
+(`USE_LOGO=0/1`) + path APK dulu, backup dulu, JANGAN uninstall,
+verifikasi Home pindah ke launcher Rais sebelum matikan stock
+launcher, lapor per langkah + undo-nya.
 
 ## Build (TERVERIFIKASI di VM 2026-10-25 03:10-03:11 WIB)
 APK sudah berhasil di-build di VM ini (JDK Temurin 17.0.21, SDK platform
