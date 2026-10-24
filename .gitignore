@@ -1,0 +1,7 @@
+backup-rais-*/
+launcher/app/build/
+prayer-times/app/build/
+tools/venv/
+*.apk
+*.keystore
+local.properties

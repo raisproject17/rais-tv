@@ -1,0 +1,45 @@
+# Rais TV fork — daftar debloat GENERIK, Android 10+ (SDK 29+), semua merk.
+# BUKAN daftar per-model: hanya paket Google/Android yang aman di semua TV
+# dan tidak dipakai sehari-hari. Jalankan dengan tools/disable.sh upstream
+# (sudah disalin ke rais-tv/tools/) yang menolak paket inti Android.
+#
+# Apply:  TV_HOST=<ip tv> tools/disable.sh debloat-generic.txt
+# Undo:   TV_HOST=<ip tv> tools/restore.sh debloat-generic.txt
+# Semua di-DISABLE (pm disable-user --user 0), TIDAK di-uninstall.
+#
+# SENGAJA TIDAK ADA DI SINI (jangan ditambahkan sembarangan):
+# - com.netflix.ninja (Netflix — dipertahankan, dock)
+# - com.phlox.tvwebbrowser (TV Bro — install, dock)
+# - com.majnioui.tv.prayer (Prayer Times fork — install, dock)
+# - BitTV (install dari APK user — paketnya dicari installer, bukan di sini)
+# - com.android.vending (Play Store), Play Services, launcher bawaan,
+#   TV/input/HDMI, remote/Bluetooth, keyboard, settings, systemui,
+#   dan semua paket inti com.android.* / com.google.android.*.
+#   Launcher bawaan HANYA dimatikan install-rais.sh SETELAH launcher
+#   Rais terverifikasi jadi Home (dumpsys mFocusedApp).
+#
+# Paket merk (PatchWall Xiaomi, partnercustomizer TCL, dsb) TIDAK ada
+# di daftar generik ini: nama paketnya beda per merk/firmware.
+# Cara menambahkannya dengan aman: di TV jalankan
+#   pm list packages | grep -i -E "xiaomi|tcl|hisense|patchwall|partner"
+# lalu cek tiap paket dengan `dumpsys package <nama>` (JANGAN di-launch),
+# tambahkan ke salinan daftar ini, dan JANGAN sentuh paket yang tidak jelas
+# fungsinya. Ikuti aturan upstream: tanya dulu sebelum disable streaming
+# app, voice assistant, Chromecast, Miracast, dan firmware updater.
+
+# Rekomendasi / baris sponsor di home bawaan
+com.google.android.tvrecommendations
+com.google.android.leanbacklauncher.recommendations
+
+# Telemetri / feedback Google (bukan Play Services)
+com.google.android.feedback
+com.google.android.partnersetup
+
+# Layanan yang tidak dipakai di TV: cetak, game Play (bukan game TV)
+com.android.printspooler
+com.google.android.play.games
+
+# Kalender bawaan (tidak dipakai jadwal sholat — sholat dari addon Aladhan)
+# Komentar: aktifkan (hapus #) hanya bila TV tidak pakai kalender sama sekali.
+# com.android.providers.calendar
+# com.google.android.syncadapters.calendar
