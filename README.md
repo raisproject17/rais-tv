@@ -134,11 +134,24 @@ Prompt siap tempel ada di `AI_PROMPT.md` — intinya:
 5. Lapor hasil per langkah + undo-nya (restore.sh, DNS opportunistic,
    kembalikan screen_off_timeout).
 
-## Build (BELUM terverifikasi di VM ini — tidak ada JDK/SDK)
-VM ini tidak punya `java` / Android SDK, jadi APK BELUM di-build di
-sini. Yang sudah divalidasi di sini: semua XML ter-parse, JSON theme
-valid, brace/paren Java seimbang, id flip/logo dirujuk layout yang benar,
-dan upstream bersih. Build di PC dengan Android SDK:
+## Build (TERVERIFIKASI di VM 2026-10-25 03:10-03:11 WIB)
+APK sudah berhasil di-build di VM ini (JDK Temurin 17.0.21, SDK platform
+34 + build-tools 34.0.0, Gradle 8.9, AGP 8.5.2):
+- `launcher/app/build/outputs/apk/release/app-release.apk` = 522 KB,
+  `com.gathin.tvhome` 2.7 (code 8), minSdk 26, targetSdk 34,
+  TANPA permission INTERNET (sesuai upstream).
+- `prayer-times/app/build/outputs/apk/release/app-release.apk` = 159 KB,
+  `com.majnioui.tv.prayer` 1.0, permission INTERNET saja.
+Verifikasi dex: launcher mengandung `flipLogo`, `show_brand_logo`,
+`updateFlip`; prayer mengandung `GANTI LOKASI` + `Serang`.
+Catatan build di VM ini (bila build ulang di sandbox serupa): Gradle
+daemon gagal bila JVM tidak pakai `-Djava.net.preferIPv4Stack=true`
+(socket localhost Java terintersep) — set via `JAVA_TOOL_OPTIONS`;
+Java HTTPS lewat egress proxy gagal bila CA egress belum diimpor ke
+cacerts JDK (`keytool -import ... hatch-egress-ca.pem`); dependensi
+Gradle lewat proxy lokal tanpa auth (forward ke egress proxy) karena
+HttpClient Gradle di-reset bila langsung pakai proxy berauth.
+Build di PC dengan Android SDK (cara standar):
 ```bash
 # JDK 17, Android SDK platform 34, build-tools 34.0.0 (syarat upstream)
 cd launcher && ./gradlew --no-daemon testReleaseUnitTest lintRelease assembleRelease
