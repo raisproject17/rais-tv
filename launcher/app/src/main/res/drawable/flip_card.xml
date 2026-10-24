@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rais TV fork: kartu flip clock — kotak gelap, rim tipis, sudut membulat.
+     Garis tengah flip sengaja tidak digambar di drawable ini (satu View per
+     digit, bukan dua flap atas/bawah) agar tetap ringan di TV 1 GB RAM;
+     efek flip-nya dari fade/scale kecil di ClockScene tiap menit berganti. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#FF161616" />
+    <stroke android:width="1dp" android:color="#33FFFFFF" />
+    <corners android:radius="18dp" />
+</shape>
